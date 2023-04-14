@@ -26,12 +26,18 @@ class ProductManager{
     const keys = Object.keys(producto_nuevo)
     const values = Object.values(producto_nuevo)
     const obligatorios = [ 'id', 'title', 'description', 'price', 'thumbnail', 'code', 'stock' ]
+    const sameCode = this.products.find((prod)=>prod.code === producto_nuevo.code)
+    
    
-    if (obligatorios.every(val => keys.includes(val)) && !values.includes(undefined)){
-      this.products.push(producto_nuevo)
-      const cadenaArchivo = JSON.stringify(this.products)
-      fs.writeFileSync(this.ruta, cadenaArchivo)
-      console.log("Archivo actualizado")
+    if (obligatorios.every(val => keys.includes(val)) && !values.includes(undefined)) {
+      if(!sameCode){
+        this.products.push(producto_nuevo)
+        const cadenaArchivo = JSON.stringify(this.products)
+        fs.writeFileSync(this.ruta, cadenaArchivo)
+        console.log("Archivo actualizado")
+      }else{
+        console.log("Los productos no pueden incluir el mismo code")
+      }
     }else{
       console.log("Es obligatorio incluir todos los campos")
     }
@@ -75,17 +81,11 @@ class ProductManager{
   }
 }
 
-const manager = new ProductManager("./producto.json")
+/* console.log(manager.getProducts()) */
 
-
-manager.addProduct("producto prueba","Este es un producto prueba",200,"Sin imagen","abc123", 25)
-manager.addProduct("producto 2","Este es un producto prueba",200,"Sin imagen","abc123",25)
-manager.addProduct("producto 3","Este es un producto prueba",200,"Sin imagen","abc123",25)
-
-console.log(manager.getProducts())
-
-console.log (manager.getProductById(2))
+/* console.log (manager.getProductById(2))
 
 console.log(manager.updateProduct(2, "price", 500))
 
-console.log (manager.deleteProduct(2))
+console.log (manager.deleteProduct(2)) */
+module.exports = ProductManager
